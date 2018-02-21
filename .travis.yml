@@ -17,7 +17,6 @@ script:
   - ./vendor/bin/phpmd ./src text ./phpmd.xml --suffixes php
 
 after_success:
-  - travis_retry php vendor/bin/coveralls -v -x clover.xml
   - bash <(curl -s https://codecov.io/bash)
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover clover.xml
