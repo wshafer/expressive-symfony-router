@@ -16,10 +16,14 @@ use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.LongVariable)
+ */
 class SymfonyRouteRouter implements RouterInterface
 {
     /** @var RouteCollection  */
     protected $collection;
+
 
     protected $httpFoundationFactory;
 
@@ -58,6 +62,9 @@ class SymfonyRouteRouter implements RouterInterface
         $this->collection->add($name, $route);
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function match(Request $request): RouteResult
     {
         try {
@@ -73,6 +80,9 @@ class SymfonyRouteRouter implements RouterInterface
         return RouteResult::fromRoute($route, $match);
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function generateUri(string $name, array $substitutions = [], array $options = []): string
     {
         return $this->generator->generate($name, $substitutions);

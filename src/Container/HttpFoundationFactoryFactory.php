@@ -9,6 +9,9 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 
 class HttpFoundationFactoryFactory
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function __invoke(ContainerInterface $container) : HttpFoundationFactory
     {
         return new HttpFoundationFactory();

@@ -9,6 +9,9 @@ use Symfony\Component\Routing\RouteCollection;
 
 class RouteCollectionFactory
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function __invoke(ContainerInterface $container) : RouteCollection
     {
         return new RouteCollection();

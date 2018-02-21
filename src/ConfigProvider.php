@@ -16,6 +16,9 @@ use WShafer\Expressive\Symfony\Router\Container\UrlGeneratorFactory;
 use WShafer\Expressive\Symfony\Router\Container\UrlMatcherFactory;
 use Zend\Expressive\Router\RouterInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class ConfigProvider
 {
     public function __invoke() : array

@@ -9,6 +9,9 @@ use Symfony\Component\Routing\RequestContext;
 
 class RequestContextFactory
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function __invoke(ContainerInterface $container) : RequestContext
     {
         return new RequestContext();
