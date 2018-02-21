@@ -1,6 +1,6 @@
-# Symfony Route integration for Expressive
+# Symfony Route Integration for Expressive
 
-Provides[Symfony Route](https://symfony.com/doc/current/routing.html) integration for
+Provides [Symfony Route](https://symfony.com/doc/current/routing.html) integration for
 [Expressive](https://github.com/zendframework/zend-expressive).
 
 ## Installation
