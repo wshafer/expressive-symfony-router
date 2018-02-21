@@ -1,0 +1,39 @@
+{
+    "name": "wshafer/expressive-symfony-router",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Westin Shafer",
+            "email": "shafer_w2002@yahoo.com"
+        }
+    ],
+    "require": {
+        "psr/container": "^1.0",
+        "psr/http-message": "^1.0.1",
+        "symfony/psr-http-message-bridge": "^1.0",
+        "symfony/routing": "^4.0",
+        "zendframework/zend-expressive-router": "^3.0.0alpha1 || ^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0.8",
+        "squizlabs/php_codesniffer": "^2.8.1",
+        "phpmd/phpmd" : "@stable",
+        "satooshi/php-coveralls": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "WShafer\\Expressive\\Symfony\\Router\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WShafer\\Expressive\\Symfony\\Router\\Test\\": "tests/"
+        }
+    },
+    "extra": {
+        "zf": {
+            "config-provider": "WShafer\\Expressive\\Symfony\\Router\\ConfigProvider"
+        }
+    }
+}
