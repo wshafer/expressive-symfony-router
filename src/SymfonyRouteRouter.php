@@ -91,7 +91,7 @@ class SymfonyRouteRouter implements RouterInterface
 
         $route = $match['route'];
 
-        if (!$this->routes[$route]) {
+        if (empty($this->routes[$route])) {
             $this->cache->invalidateCacheFile();
             return RouteResult::fromRouteFailure(null);
         }
