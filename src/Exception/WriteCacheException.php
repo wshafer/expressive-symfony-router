@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace WShafer\Expressive\Symfony\Router\Container;
+namespace WShafer\Expressive\Symfony\Router\Exception;
 
 use Zend\Expressive\Router\Exception\RuntimeException;
 

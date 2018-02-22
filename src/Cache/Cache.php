@@ -6,9 +6,9 @@ namespace WShafer\Expressive\Symfony\Router\Cache;
 
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
-use WShafer\Expressive\Symfony\Router\Container\InvalidCacheDirectoryException;
-use WShafer\Expressive\Symfony\Router\Container\InvalidCacheException;
-use WShafer\Expressive\Symfony\Router\Container\WriteCacheException;
+use WShafer\Expressive\Symfony\Router\Exception\InvalidCacheDirectoryException;
+use WShafer\Expressive\Symfony\Router\Exception\InvalidCacheException;
+use WShafer\Expressive\Symfony\Router\Exception\WriteCacheException;
 
 /**
  * @SuppressWarnings(PHPMD.LongVariable)
@@ -100,9 +100,11 @@ class Cache
             serialize($this->cache)
         );
 
+        // @codeCoverageIgnoreStart
         if ($bytes === false) {
             throw new WriteCacheException('Unable to write cache file: '.$this->cacheFile);
         }
+        // @codeCoverageIgnoreEnd
 
         return true;
     }
@@ -119,7 +121,22 @@ class Cache
         unlink($this->cacheFile);
     }
 
-    protected function fetchCache()
+    public function isCacheEnabled()
+    {
+        return $this->cacheEnabled;
+    }
+
+    public function getCacheFile()
+    {
+        return $this->cacheFile;
+    }
+
+    public function doesCacheNeedsUpdate()
+    {
+        return $this->cacheNeedsUpdates;
+    }
+
+    public function fetchCache()
     {
         if (!$this->cacheEnabled
             || empty($this->cacheFile)

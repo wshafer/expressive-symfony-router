@@ -108,7 +108,7 @@ class SymfonyRouteRouterTest extends TestCase
         $this->router->addRoute($mockRoute);
     }
 
-    public function testMatch()
+    public function testMatchWithCachedRouteNoMatchedZendRoute()
     {
         /** @var MockObject|Route $mockRoute */
         $mockRoute = $this->createMock(Route::class);
@@ -133,6 +133,51 @@ class SymfonyRouteRouterTest extends TestCase
 
         $this->mockCache->expects($this->once())
             ->method('writeCache')
+            ->willReturn(true);
+
+        $return = $this->router->match($mockRequest);
+
+        $this->assertInstanceOf(RouteResult::class, $return);
+        $this->assertFalse($return->isSuccess());
+    }
+
+    public function testMatch()
+    {
+        /** @var MockObject|Route $mockRoute */
+        $mockRoute = $this->createMock(Route::class);
+
+        $mockRoute->expects($this->once())
+            ->method('getPath')
+            ->willReturn('/');
+
+        $mockRoute->expects($this->once())
+            ->method('getName')
+            ->willReturn('home');
+
+        $mockRequest = $this->createMock(ServerRequestInterface::class);
+        $mockUri = $this->createMock(UriInterface::class);
+
+        $mockRequest->expects($this->once())
+            ->method('getUri')
+            ->willReturn($mockUri);
+
+        $mockUri->expects($this->once())
+            ->method('getPath')
+            ->willReturn('/');
+
+        $this->mockUrlMatcher->expects($this->once())
+            ->method('match')
+            ->willReturn([
+                'route' => 'home',
+                '_route' => 'home'
+            ]);
+
+        $this->mockCache->expects($this->once())
+            ->method('writeCache')
+            ->willReturn(true);
+
+        $this->mockCache->expects($this->once())
+            ->method('has')
             ->willReturn(true);
 
         $this->router->addRoute($mockRoute);
