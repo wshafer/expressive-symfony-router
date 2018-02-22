@@ -8,6 +8,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RouteCollection;
+use WShafer\Expressive\Symfony\Router\Cache\Cache;
 
 class SymfonyRouteRouterFactory
 {
@@ -19,6 +20,8 @@ class SymfonyRouteRouterFactory
 
         $routes = $container->get(RouteCollection::class);
 
-        return new SymfonyRouteRouter($routes, $urlMatcher, $urlGenerator);
+        $cache = $container->get(Cache::class);
+
+        return new SymfonyRouteRouter($routes, $urlMatcher, $urlGenerator, $cache);
     }
 }

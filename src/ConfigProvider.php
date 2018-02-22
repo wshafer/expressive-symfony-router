@@ -9,6 +9,8 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
+use WShafer\Expressive\Symfony\Router\Cache\Cache;
+use WShafer\Expressive\Symfony\Router\Cache\CacheFactory;
 use WShafer\Expressive\Symfony\Router\Container\HttpFoundationFactoryFactory;
 use WShafer\Expressive\Symfony\Router\Container\RequestContextFactory;
 use WShafer\Expressive\Symfony\Router\Container\RouteCollectionFactory;
@@ -41,6 +43,7 @@ class ConfigProvider
                 UrlMatcher::class => UrlMatcherFactory::class,
                 UrlGenerator::class => UrlGeneratorFactory::class,
                 RouteCollection::class => RouteCollectionFactory::class,
+                Cache::class => CacheFactory::class
             ],
         ];
     }

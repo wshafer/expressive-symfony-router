@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RouteCollection;
+use WShafer\Expressive\Symfony\Router\Cache\Cache;
 use WShafer\Expressive\Symfony\Router\SymfonyRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
@@ -26,6 +27,9 @@ class SymfonyRouteRouterTest extends TestCase
     /** @var MockObject|UrlGenerator */
     protected $mockUrlGenerator;
 
+    /** @var MockObject|Cache */
+    protected $mockCache;
+
     /** @var SymfonyRouteRouter */
     protected $router;
 
@@ -40,11 +44,18 @@ class SymfonyRouteRouterTest extends TestCase
         $this->mockUrlGenerator = $this->getMockBuilder(UrlGenerator::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $this->mockCache = $this->getMockBuilder(Cache::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->mockCache->expects($this->once())
+            ->method('populateCollectionFromCache')
+            ->with($this->equalTo($this->mockRouteCollection));
 
         $this->router = new SymfonyRouteRouter(
             $this->mockRouteCollection,
             $this->mockUrlMatcher,
-            $this->mockUrlGenerator
+            $this->mockUrlGenerator,
+            $this->mockCache
         );
 
         $this->assertInstanceOf(SymfonyRouteRouter::class, $this->router);
@@ -82,6 +93,18 @@ class SymfonyRouteRouterTest extends TestCase
                 $this->isInstanceOf(\Symfony\Component\Routing\Route::class)
             );
 
+        $this->mockCache->expects($this->once())
+            ->method('has')
+            ->with($this->equalTo('home'))
+            ->willReturn(false);
+
+        $this->mockCache->expects($this->once())
+            ->method('add')
+            ->with(
+                $this->equalTo('home'),
+                $this->isInstanceOf(\Symfony\Component\Routing\Route::class)
+            )->willReturn(true);
+
         $this->router->addRoute($mockRoute);
     }
 
@@ -108,6 +131,10 @@ class SymfonyRouteRouterTest extends TestCase
                 '_route' => 'home'
             ]);
 
+        $this->mockCache->expects($this->once())
+            ->method('writeCache')
+            ->willReturn(true);
+
         $return = $this->router->match($mockRequest);
 
         $this->assertInstanceOf(RouteResult::class, $return);
@@ -132,6 +159,10 @@ class SymfonyRouteRouterTest extends TestCase
             ->method('match')
             ->willThrowException(new MethodNotAllowedException(['GET']));
 
+        $this->mockCache->expects($this->once())
+            ->method('writeCache')
+            ->willReturn(true);
+
         $return = $this->router->match($mockRequest);
 
         $this->assertInstanceOf(RouteResult::class, $return);
@@ -154,6 +185,10 @@ class SymfonyRouteRouterTest extends TestCase
         $this->mockUrlMatcher->expects($this->once())
             ->method('match')
             ->willThrowException(new ResourceNotFoundException());
+
+        $this->mockCache->expects($this->once())
+            ->method('writeCache')
+            ->willReturn(true);
 
         $return = $this->router->match($mockRequest);
 

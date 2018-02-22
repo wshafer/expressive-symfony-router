@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route as SymfonyRoute;
+use WShafer\Expressive\Symfony\Router\Cache\Cache;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
@@ -24,23 +25,26 @@ class SymfonyRouteRouter implements RouterInterface
     /** @var RouteCollection  */
     protected $collection;
 
-
-    protected $httpFoundationFactory;
-
-    protected $requestContext;
-
+    /** @var UrlMatcher */
     protected $urlMatcher;
 
+    /** @var UrlGenerator */
     protected $generator;
+
+    protected $cache;
 
     public function __construct(
         RouteCollection $collection,
         UrlMatcher $urlMatcher,
-        UrlGenerator $generator
+        UrlGenerator $generator,
+        Cache $cache
     ) {
         $this->collection = $collection;
         $this->urlMatcher = $urlMatcher;
         $this->generator = $generator;
+        $this->cache = $cache;
+
+        $this->cache->populateCollectionFromCache($collection);
     }
 
     public function addRoute(Route $route): void
@@ -48,7 +52,11 @@ class SymfonyRouteRouter implements RouterInterface
         $path = $route->getPath();
         $name = $route->getName();
 
-        $route = new SymfonyRoute(
+        if ($this->cache->has($name)) {
+            return;
+        }
+
+        $symfonyRoute = new SymfonyRoute(
             $path,
             ['route' => $route],
             [],
@@ -59,7 +67,8 @@ class SymfonyRouteRouter implements RouterInterface
             null
         );
 
-        $this->collection->add($name, $route);
+        $this->cache->add($name, $symfonyRoute);
+        $this->collection->add($name, $symfonyRoute);
     }
 
     /**
@@ -67,6 +76,8 @@ class SymfonyRouteRouter implements RouterInterface
      */
     public function match(Request $request): RouteResult
     {
+        $this->cache->writeCache();
+
         try {
             $match = $this->urlMatcher->match($request->getUri()->getPath());
         } catch (MethodNotAllowedException $e) {
