@@ -13,6 +13,7 @@ Provides [Symfony Route](https://symfony.com/doc/current/routing.html) integrati
 Install this library using composer:
 
 ```bash
+$ composer require symfony/routing:dev-master
 $ composer require wshafer/expressive-symfony-router:dev-master
 ```
 
