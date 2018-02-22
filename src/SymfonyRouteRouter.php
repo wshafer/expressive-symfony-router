@@ -7,7 +7,6 @@ namespace WShafer\Expressive\Symfony\Router;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RouteCollection;
@@ -33,6 +32,8 @@ class SymfonyRouteRouter implements RouterInterface
 
     protected $cache;
 
+    protected $routes = [];
+
     public function __construct(
         RouteCollection $collection,
         UrlMatcher $urlMatcher,
@@ -52,13 +53,15 @@ class SymfonyRouteRouter implements RouterInterface
         $path = $route->getPath();
         $name = $route->getName();
 
+        $this->routes[$name] = $route;
+
         if ($this->cache->has($name)) {
             return;
         }
 
         $symfonyRoute = new SymfonyRoute(
             $path,
-            ['route' => $route],
+            ['route' => $name],
             [],
             $route->getOptions(),
             null,
@@ -87,8 +90,14 @@ class SymfonyRouteRouter implements RouterInterface
         }
 
         $route = $match['route'];
+
+        if (!$this->routes[$route]) {
+            $this->cache->invalidateCacheFile();
+            return RouteResult::fromRouteFailure(null);
+        }
+
         unset($match['route'], $match['_route']);
-        return RouteResult::fromRoute($route, $match);
+        return RouteResult::fromRoute($this->routes[$route], $match);
     }
 
     /**

@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use WShafer\Expressive\Symfony\Router\Container\InvalidCacheDirectoryException;
 use WShafer\Expressive\Symfony\Router\Container\InvalidCacheException;
+use WShafer\Expressive\Symfony\Router\Container\WriteCacheException;
 
 /**
  * @SuppressWarnings(PHPMD.LongVariable)
@@ -94,10 +95,28 @@ class Cache
             ));
         }
 
-        return file_put_contents(
+        $bytes = file_put_contents(
             $this->cacheFile,
             serialize($this->cache)
         );
+
+        if ($bytes === false) {
+            throw new WriteCacheException('Unable to write cache file: '.$this->cacheFile);
+        }
+
+        return true;
+    }
+
+    public function invalidateCacheFile() : void
+    {
+        if (!$this->cacheEnabled
+            || empty($this->cacheFile)
+            || !is_file($this->cacheFile)
+        ) {
+            return;
+        }
+
+        unlink($this->cacheFile);
     }
 
     protected function fetchCache()

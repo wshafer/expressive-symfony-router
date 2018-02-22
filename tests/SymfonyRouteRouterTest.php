@@ -127,7 +127,7 @@ class SymfonyRouteRouterTest extends TestCase
         $this->mockUrlMatcher->expects($this->once())
             ->method('match')
             ->willReturn([
-                'route' => $mockRoute,
+                'route' => 'home',
                 '_route' => 'home'
             ]);
 
@@ -135,6 +135,7 @@ class SymfonyRouteRouterTest extends TestCase
             ->method('writeCache')
             ->willReturn(true);
 
+        $this->router->addRoute($mockRoute);
         $return = $this->router->match($mockRequest);
 
         $this->assertInstanceOf(RouteResult::class, $return);

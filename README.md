@@ -28,3 +28,20 @@ your current router's config provider that was installed during setup.
 
 ### Routing
 $app->route('/book/{id}', YourRequestHandler::class)
+
+
+### Caching
+To enable caching you need to add the following
+config:
+
+```php
+
+return [
+    'router' => [
+        'symfony' => [
+            'cache_enabled' => true,
+            'cache_file'    => /my/cache/dir/cache_file.txt
+        ],
+    ],
+];
+```
