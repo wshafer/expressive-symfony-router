@@ -35,5 +35,6 @@
         "zf": {
             "config-provider": "WShafer\\Expressive\\Symfony\\Router\\ConfigProvider"
         }
-    }
+    },
+    "abandoned": "wshafer/mezzio-symfony-router"
 }
